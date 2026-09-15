@@ -1,0 +1,69 @@
+{
+  "manifest_version": 3,
+  "name": "Opal + Flow 本地提示词助手",
+  "version": "2.2.6",
+  "description": "Opal 自动保存提示词，Flow 从同一本地数据库领取生成；支持查看、编辑、备份。",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting",
+    "unlimitedStorage",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://opal.google/*",
+    "https://flow.google.com/*",
+    "https://labs.google/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "options_page": "library.html",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'self' https://opal.google; img-src 'self' data:"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://opal.google/*"
+      ],
+      "js": [
+        "page-settings.js",
+        "opal.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true,
+      "match_origin_as_fallback": true
+    },
+    {
+      "matches": [
+        "https://flow.google.com/*",
+        "https://labs.google/*"
+      ],
+      "js": [
+        "page-settings.js",
+        "flow-config.js",
+        "flow.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnZqMrEJM8QK/Z63WUma7cGi5qjUfCX1bV2tuwwlDDsG5jQkHy84Ktzm6pwPQIgT6UflOJFMZB+ZorArMk+nNTr4DTNxWP3G1iB4Q+G8IfoaIExdh/qhVEyhpj7PlSLbTod6nUtgYkK9oZKnc/7x2QtibI2OUnvkKh789yzinVFPAmtUq25slzSO8EaPiwrZfPSgtZsi/QJu/N/3lPUX4YiRvB8y0YSXFb1WbW76QQrhJptAOKAWVBnI9GTGAEDJBuBTlvGSUPGoeXlbue0kZgBI5Z7uifDWb1rwul4UHMtjVeSqU7UX9GrZL5r54PCBpopFphUXZKvT2m7vEsjHgHwIDAQAB"
+}
