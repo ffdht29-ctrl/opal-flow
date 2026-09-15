@@ -1,0 +1,50 @@
+name: Release opal-flow
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      attestations: write
+      id-token: write
+
+    steps:
+      # 1. 获取仓库代码
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. 准备插件文件
+      - name: Prepare Extension
+        run: |
+          mkdir -p release
+
+          rsync -av ./ release/ \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='release' \
+            --exclude='*.zip'
+
+      # 3. 打包 ZIP
+      - name: Package Extension
+        run: |
+          cd release
+          zip -r "../opal-flow-${{ github.ref_name }}.zip" .
+
+      # 4. 生成构建证明
+      - name: Generate Build Attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'opal-flow-${{ github.ref_name }}.zip'
+
+      # 5. 创建 GitHub Release
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: 'opal-flow-${{ github.ref_name }}.zip'
+          generate_release_notes: true
